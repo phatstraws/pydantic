@@ -65,3 +65,17 @@ def test_strict_complex():
         ta.validate_python(1.0)
     with pytest.raises(ValidationError):
         ta.validate_python(5)
+
+
+def test_complex_strict_validation_argument():
+    ta = TypeAdapter(complex)
+
+    assert ta.validate_python(complex(1, 2), strict=True) == complex(1, 2)
+    assert ta.validate_json('"1+2j"', strict=True) == complex(1, 2)
+
+    with pytest.raises(ValidationError):
+        ta.validate_python(5, strict=True)
+    with pytest.raises(ValidationError):
+        ta.validate_python('1+2j', strict=True)
+    with pytest.raises(ValidationError):
+        ta.validate_json('5', strict=True)
